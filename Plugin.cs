@@ -396,7 +396,13 @@ public class Plugin : BaseUnityPlugin
         if (Input.GetKey(KeyCode.Slash) && SceneManager.GetActiveScene().name.ToString() == "GameScene")
         {
             if (player == null)
+            {
                 player = GameObject.FindWithTag("Player");
+                Harmony.CreateAndPatchAll(typeof(PatchCanBuildSpecifiedBuildingTypeHere));
+                Harmony.CreateAndPatchAll(typeof(PatchCheckIfValidToBuildHere));
+                Harmony.CreateAndPatchAll(typeof(PatchBuildLimit));
+            }
+                
             toggled_once = true;
             if (ticker == 0)
             {
@@ -1015,6 +1021,9 @@ public class Plugin : BaseUnityPlugin
                     "<color=green>enableContent</color> - enables disabled content\n" +
                     "<color=green>flight</color> <color=yellow>[true or false]</color> - enables flight/ fills log w/ errors\n" +
                     "<color=green>clear</color> - clears inventory\n" +
+                    "<color=green>pollution</color> - toggles pollution\n" +
+                    "<color=green>infinitePower</color> - toggles infinitePower\n" +
+                    "<color=green>pickupRange</color> - sets pickupRange to 999\n" +
                     "<color=red>PRESS / AGAIN TO REMOVE THIS POPUP</color></b>";
                 help = true;
             }
@@ -1134,5 +1143,55 @@ public class Plugin : BaseUnityPlugin
         }
 
 
+
+        //harmonyx patch for public bool CanBuildSpecifiedBuildingTypeHere(BuildingData buildingToBuild)
+        
+
+
     }
+
+
+    class PatchCanBuildSpecifiedBuildingTypeHere
+    {
+        [HarmonyPatch(typeof(GridButton), "CanBuildSpecifiedBuildingTypeHere")] // Specify target method with HarmonyPatch attribute
+        [HarmonyPrefix]
+
+        public static bool UpdateRealStats(ref bool __runOriginal)
+        {
+            __runOriginal = false; // Set to false to skip original method
+
+
+
+            return true; // Skip additional code (not original method)
+        }
+
+    }
+
+    class PatchBuildLimit
+    {
+        [HarmonyPatch(typeof(BuildingData), "buildLimit")] // Specify target method with HarmonyPatch attribute
+        [HarmonyPrefix]
+        public static int buildLimit(ref bool __runOriginal)
+        {
+            __runOriginal=false;
+            return 0;
+        }
+    }
+
+    class PatchCheckIfValidToBuildHere
+    {
+        [HarmonyPatch(typeof(BuildingManager), "checkIfValidToBuildHere")] // Specify target method with HarmonyPatch attribute
+        [HarmonyPrefix]
+        public static bool UpdateRealStats(ref bool __runOriginal)
+        {
+            __runOriginal = false; // Set to false to skip original method
+
+
+
+            return true; // Skip additional code (not original method)
+        }
+    }
+
 }
+
+//harmonyx patch for public bool CanBuildSpecifiedBuildingTypeHere(BuildingData buildingToBuild)
