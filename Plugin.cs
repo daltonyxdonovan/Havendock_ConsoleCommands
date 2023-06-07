@@ -50,6 +50,8 @@ public class Plugin : BaseUnityPlugin
     Color transparent = new Color(0,0,0,0);
     Color nontransparent = new Color(0,0,0,0.9f);
     double version = 1.80;
+    bool isPollutionEnabled = true;
+    bool infPower = false;
 
     GameObject suggestions;
     bool flight = false;
@@ -86,6 +88,10 @@ public class Plugin : BaseUnityPlugin
         if (ticker > 0)
             ticker--;
 
+        if (!isPollutionEnabled)
+        {
+            Game.current.pollution = 0;
+        }
         if (difficult)
         {
             difficultTicker++;
@@ -122,6 +128,10 @@ public class Plugin : BaseUnityPlugin
                 difficultTicker = 0;
             }
             
+        }
+        if (infPower)
+        {
+            Game.current.power = 999f;
         }
         if (gathering)
         {
@@ -809,6 +819,21 @@ public class Plugin : BaseUnityPlugin
             {
                 Toolbox.instance.boatManager.SpawnNewTraderBoat(1,0,true);
             }          //example: spawnTrader
+
+            else if (input == "pollution")
+            {
+                isPollutionEnabled = !isPollutionEnabled;
+            }
+
+            else if (input == "pickupRange")
+            {
+                PlayerManager.LocalPlayerInstance.GetComponent<PlayerScript>().baseInteractionDistance = 999f;
+            }
+
+            else if (input == "infinitePower")
+            {
+                infPower = true;
+            }
 
             else if (input == "spawnPenguin")
             {
