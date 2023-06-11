@@ -45,5 +45,8 @@
 		<Reference Include="UI unity">
 			<HintPath>C:\Program Files (x86)\Steam\steamapps\common\Havendock\Havendock_Data\Managed\PhotonUnityNetworking.dll</HintPath>
 		</Reference>
+		<Reference Include="localization">
+			<HintPath>C:\Program Files (x86)\Steam\steamapps\common\Havendock\Havendock_Data\Managed\UnityEngine.LocalizationModule.dll</HintPath>
+		</Reference>
 	</ItemGroup>
 </Project>

@@ -8,6 +8,7 @@ using System.Linq;
 using UnityEngine.UI.Extensions;
 using HarmonyLib;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace cheatBox;
 
@@ -87,6 +88,42 @@ public class Plugin : BaseUnityPlugin
         //we don't wanna call this every frame, so we'll use a ticker
         if (ticker > 0)
             ticker--;
+
+        if (SceneManager.GetActiveScene().name.ToString() == "GameScene")
+        {
+            /*BuildingManager buildingManager = Toolbox.instance.buildingManager;
+            BuildingData[] buildings = buildingManager.buildingDatas;
+
+            for (int i = 0; i < buildings.Length; i++)
+            {
+                if (buildings[i].name == "Crane")
+                {
+                    if (!(buildings[i] is BuildingData))
+                    {
+                        continue;
+                    }
+
+                    BuildingData buildingData = buildings[i] as BuildingData;
+                    if (buildingData != null)
+                    {
+
+                        CustomBuildingData customBuildingData = new CustomBuildingData
+                        {
+                            // Copy properties from buildingData to customBuildingData
+
+                            name = buildingData.name
+                        };
+
+                        buildings[i] = (BuildingData)customBuildingData; // Explicit cast to BuildingData
+
+                    }
+                }
+            }*/
+        }
+
+        
+        
+
 
         if (!isPollutionEnabled)
         {
@@ -398,16 +435,23 @@ public class Plugin : BaseUnityPlugin
             if (player == null)
             {
                 player = GameObject.FindWithTag("Player");
-                Harmony.CreateAndPatchAll(typeof(PatchCanBuildSpecifiedBuildingTypeHere));
-                Harmony.CreateAndPatchAll(typeof(PatchCheckIfValidToBuildHere));
-                Harmony.CreateAndPatchAll(typeof(PatchBuildLimit));
-            }
                 
+            }
+            /*BuildingManager buildingManager1 = Toolbox.instance.buildingManager;
+            BuildingData[] buildings = buildingManager1.buildingDatas;
+            for (int i = 0; i < buildings.Length; i++)
+            {
+                Log(buildings[i].name);
+            }*/
+            
+
             toggled_once = true;
             if (ticker == 0)
             {
                 if (!everActivated)
                 {
+                    
+                    //Harmony.CreateAndPatchAll(typeof(PatchBuildLimit));
                     //canvas is object named '~Canvas'
                     canvas = GameObject.Find("Canvas~").GetComponent<Canvas>();
                     myPanel = new GameObject("daltonyx_panel");
@@ -583,7 +627,7 @@ public class Plugin : BaseUnityPlugin
 
                 command_text.text = "Commands: \n" +
                     "<b><color=green>giveAll</color> - gives you every item in the game \n" +
-                    "<color=green>give</color> <color=yellow>[item] [amount]</color> - gives you the item you specify \n" +
+                    "<color=green>give</color> <color=yellow>[item] [amount]</color> - gives you the item you specify, Capitalize first letter! \n" +
                     "<color=green>difficulty</color> <color=yellow>[number]</color> - sets the difficulty of the game \n" +
                     "<color=green>godmode</color> <color=yellow>[true or false]</color> - makes you invincible \n" +
                     "<color=green>help</color> <color=yellow>[number 1 to 2]</color> - shows this message \n" +
@@ -903,6 +947,14 @@ public class Plugin : BaseUnityPlugin
                 {
                     Game.current.researchLevels[i] = 1;
                 }
+                
+                ResearchManager researchManager = Toolbox.instance.researchManager;
+                foreach (ResearchData researchData in researchManager.datas)
+                {
+                    Game.current.researchLevels[(int)researchData.researchType] = researchData.maxLevel - 1;
+                    researchManager.CompleteResearch(researchData.researchType);
+                }
+                
             }
             
             else if (input.StartsWith("researchSpeed"))
@@ -1151,46 +1203,10 @@ public class Plugin : BaseUnityPlugin
     }
 
 
-    class PatchCanBuildSpecifiedBuildingTypeHere
-    {
-        [HarmonyPatch(typeof(GridButton), "CanBuildSpecifiedBuildingTypeHere")] // Specify target method with HarmonyPatch attribute
-        [HarmonyPrefix]
+ 
 
-        public static bool UpdateRealStats(ref bool __runOriginal)
-        {
-            __runOriginal = false; // Set to false to skip original method
-
-
-
-            return true; // Skip additional code (not original method)
-        }
-
-    }
-
-    class PatchBuildLimit
-    {
-        [HarmonyPatch(typeof(BuildingData), "buildLimit")] // Specify target method with HarmonyPatch attribute
-        [HarmonyPrefix]
-        public static int buildLimit(ref bool __runOriginal)
-        {
-            __runOriginal=false;
-            return 0;
-        }
-    }
-
-    class PatchCheckIfValidToBuildHere
-    {
-        [HarmonyPatch(typeof(BuildingManager), "checkIfValidToBuildHere")] // Specify target method with HarmonyPatch attribute
-        [HarmonyPrefix]
-        public static bool UpdateRealStats(ref bool __runOriginal)
-        {
-            __runOriginal = false; // Set to false to skip original method
-
-
-
-            return true; // Skip additional code (not original method)
-        }
-    }
+    
+    
 
 }
 
