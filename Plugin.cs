@@ -54,9 +54,11 @@ public class Plugin : BaseUnityPlugin
     bool isPollutionEnabled = true;
     bool infPower = false;
 
+
     GameObject suggestions;
     bool flight = false;
     GameObject player;
+
 
     public void spawnTrash()
     {
@@ -81,7 +83,6 @@ public class Plugin : BaseUnityPlugin
         MessageScript.instance.displayMessageDirectly(message);
         Logger.LogInfo(message);
     }
-
 
     public void Update()
     {
